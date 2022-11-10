@@ -13,20 +13,11 @@ SELECT
   {% for hub_natural_key, tgt_hub_key in zip(src.hub_natural_keys, tgt.hub_keys) -%}
   ,{{ dbt_datavault.make_key(hub_natural_key) }} AS {{ tgt_hub_key }}
   {% endfor -%}
-  ,{{ src.load_dts }} AS load_dts
-  ,'{{ src.rec_src }}' AS rec_src
+  ,{{ dbt_datavault.load_dts_code(src) }}
+  ,{{ dbt_datavault.rec_src_code(src) }}
 FROM
   {{ src_table }}
-{% if src.filter or is_incremental() -%}
-WHERE
-  {% set and_ = joiner("AND ") -%}
-  {% if src.filter -%}
-  {{ and_() }}{{ src.filter }}
-  {% endif -%}
-  {% if is_incremental() -%}
-  {{ and_() }}'{{ var('start_ts') }}' <= {{ src.load_dts }} AND {{ src.load_dts }} < '{{ var('end_ts') }}'
-  {% endif -%}
-{% endif -%}
+{{ dbt_datavault.filter_and_incremental_code(src) }}
 {% endfor -%}
 {% endcall %}
 {% endmacro %}

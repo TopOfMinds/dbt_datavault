@@ -9,23 +9,14 @@
 {% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
 SELECT
   {{ dbt_datavault.make_key(src.natural_keys) }} AS {{ tgt.hub_key }}
-  ,{{ src.load_dts }} AS load_dts
+  ,{{ dbt_datavault.load_dts_code(src) }}
   {% for src_attr, tgt_attr in zip(src.attributes, tgt.attributes) -%}
   ,{{ src_attr }} AS {{ tgt_attr }}
   {% endfor -%}
-  ,'{{ src.rec_src }}' AS rec_src
+  ,{{ dbt_datavault.rec_src_code(src) }}
 FROM
   {{ src_table }}
-{% if src.filter or is_incremental() -%}
-WHERE
-  {% set and_ = joiner("AND ") -%}
-  {% if src.filter -%}
-  {{ and_() }}{{ src.filter }}
-  {% endif -%}
-  {% if is_incremental() -%}
-  {{ and_() }}'{{ var('start_ts') }}' <= {{ src.load_dts }} AND {{ src.load_dts }} < '{{ var('end_ts') }}'
-  {% endif -%}
-{% endif -%}
+{{ dbt_datavault.filter_and_incremental_code(src) }}
 {% endfor %}
 {% endcall -%}
 {% endmacro %}
