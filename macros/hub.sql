@@ -1,17 +1,16 @@
 {% macro hub(metadata_yaml) -%}
 {% set metadata = fromyaml(metadata_yaml) -%}
 {% set tgt = metadata.target -%}
-{% set sources = metadata.sources if metadata.sources else [metadata.source] -%}
-{% set all_fields = [tgt.key] + tgt.business_keys + ['load_dts', 'rec_src'] -%}
+{% set all_fields = [tgt.hub_key] + tgt.natural_keys + ['load_dts', 'rec_src'] -%}
 
-{%- call dbt_datavault.deduplicate([tgt.key], all_fields) -%}
-{% for src in sources %}
+{%- call dbt_datavault.deduplicate([tgt.hub_key], all_fields) -%}
+{% for src in metadata.sources %}
 {% if not loop.first %}UNION ALL{% endif %}
 {% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
 SELECT
-  {{ dbt_datavault.make_key(src.business_keys) }} AS {{ tgt.key }}
-  {% for src_business_key, tgt_business_key in zip(src.business_keys, tgt.business_keys) -%}
-  ,{{ src_business_key }} AS {{ tgt_business_key }}
+  {{ dbt_datavault.make_key(src.natural_keys) }} AS {{ tgt.hub_key }}
+  {% for src_natural_key, tgt_natural_key in zip(src.natural_keys, tgt.natural_keys) -%}
+  ,{{ src_natural_key }} AS {{ tgt_natural_key }}
   {% endfor -%}
   ,{{ src.load_dts }} AS load_dts
   ,'{{ src.rec_src }}' AS rec_src

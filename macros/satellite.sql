@@ -1,14 +1,14 @@
 {% macro satellite(metadata_yaml) -%}
 {% set metadata = fromyaml(metadata_yaml) -%}
 {%- set tgt = metadata.target -%}
-{%- set src = metadata.source -%}
-{% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
-{% set all_fields = [tgt.key, 'load_dts'] + tgt.attributes + ['rec_src'] -%}
-{% set src_keys = src.keys_ if src.keys_ else [src.key] -%}
+{% set all_fields = [tgt.hub_key, 'load_dts'] + tgt.attributes + ['rec_src'] -%}
 
-{%- call dbt_datavault.deduplicate([tgt.key] + tgt.attributes, all_fields) %}
+{%- call dbt_datavault.deduplicate([tgt.hub_key] + tgt.attributes, all_fields) %}
+{% for src in metadata.sources %}
+{% if not loop.first %}UNION ALL{% endif %}
+{% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
 SELECT
-  {{ dbt_datavault.make_key(src_keys) }} AS {{ tgt.key }}
+  {{ dbt_datavault.make_key(src.natural_keys) }} AS {{ tgt.hub_key }}
   ,{{ src.load_dts }} AS load_dts
   {% for src_attr, tgt_attr in zip(src.attributes, tgt.attributes) -%}
   ,{{ src_attr }} AS {{ tgt_attr }}
@@ -26,5 +26,6 @@ WHERE
   {{ and_() }}'{{ var('start_ts') }}' <= {{ src.load_dts }} AND {{ src.load_dts }} < '{{ var('end_ts') }}'
   {% endif -%}
 {% endif -%}
+{% endfor %}
 {% endcall -%}
 {% endmacro %}
