@@ -9,7 +9,7 @@ SELECT
 {% endif -%}
 FROM (
   SELECT
-    *
+    q.*
     ,ROW_NUMBER() OVER(PARTITION BY {{ dedup_fields | join(', ') }} ORDER BY {{ order_field }} ASC) rn
   FROM (
     {{- caller() | indent(4) }}
