@@ -3,7 +3,7 @@
 {%- set tgt = metadata.target -%}
 {% set all_fields = [tgt.hub_key, 'load_dts'] + tgt.attributes + ['rec_src'] -%}
 
-{%- call dbt_datavault.deduplicate([tgt.hub_key] + tgt.attributes, all_fields) %}
+{%- call dbt_datavault.deduplicate([tgt.hub_key] + tgt.attributes, all_fields, no_deduplication=tgt.no_deduplication) %}
 {% for src in metadata.sources %}
 {% if not loop.first %}UNION ALL{% endif %}
 {% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}

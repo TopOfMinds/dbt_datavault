@@ -1,4 +1,7 @@
-{% macro deduplicate(dedup_fields, return_fields=None, order_field='load_dts') -%}
+{% macro deduplicate(dedup_fields, return_fields=None, order_field='load_dts', no_deduplication=false) -%}
+{% if no_deduplication -%}
+{{- caller() }}
+{% else -%}
 SELECT
 {% if return_fields -%}
 {% for return_field in return_fields -%}
@@ -28,4 +31,5 @@ FROM (
   {%- endif %}  
 )
 WHERE rn = 1
+{% endif -%}
 {% endmacro %}
