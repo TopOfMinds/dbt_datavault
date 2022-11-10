@@ -1,5 +1,6 @@
 {% macro pit(metadata_yaml) -%}
 {% set metadata = fromyaml(metadata_yaml) -%}
+{{ dbt_datavault.validate_pit_metadata(metadata) -}}
 {% set tgt = metadata.target -%}
 
 WITH time_line AS (
@@ -38,4 +39,18 @@ FROM
 {%- for src in metadata.sources %}
 LEFT JOIN {{ src.table }} ON tl.{{ tgt.hub_key }} = {{ src.table }}.{{ src.hub_key }} AND {{ src.table }}.effective_ts <=  tl.{{ tgt.effective_ts }} AND tl.{{ tgt.effective_ts }} < {{ src.table }}.effective_end_ts
 {%- endfor -%} 
-{% endmacro %}
+{% endmacro -%}
+
+{% macro validate_pit_metadata(metadata) -%}
+{% set msg = "PIT metadata lacks " -%}
+{% if not metadata.target %}{{ exceptions.raise_compiler_error(msg ~ "target") }}{% endif -%}
+{% if not metadata.target.hub_key %}{{ exceptions.raise_compiler_error(msg ~ "target.hub_key") }}{% endif -%}
+{% if not metadata.target.effective_ts %}{{ exceptions.raise_compiler_error(msg ~ "target.effective_ts") }}{% endif -%}
+{% if not metadata.sources %}{{ exceptions.raise_compiler_error(msg ~ "sources") }}{% endif -%}
+{% for src in metadata.sources -%}
+{% if not src.table %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].table") }}{% endif -%}
+{% if not src.hub_key %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].hub_key") }}{% endif -%}
+{% if not src.load_dts %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].load_dts") }}{% endif -%}
+{% if not src.effective_ts %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].effective_ts") }}{% endif -%}
+{% endfor -%}
+{% endmacro -%}
