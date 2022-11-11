@@ -32,7 +32,7 @@ SELECT
   ,tl.{{ tgt.effective_ts }}
   ,COALESCE(LEAD(tl.{{ tgt.effective_ts }}) OVER(PARTITION BY tl.{{ tgt.hub_key }} ORDER BY tl.{{ tgt.effective_ts }} ASC), CAST('9999-12-31' AS TIMESTAMP)) AS effective_end_ts
   {%- for src in metadata.sources %}
-  ,tl__{{ src.table }}.{{ src.load_dts }} AS tl__{{ src.table }}_{{ src.load_dts }}
+  ,tl__{{ src.table }}.{{ src.load_dts }} AS {{ src.table }}_{{ src.load_dts }}
   {%- endfor %}
 FROM 
   time_line tl
