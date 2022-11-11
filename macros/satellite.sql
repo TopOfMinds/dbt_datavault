@@ -9,7 +9,7 @@
 {% if not loop.first %}UNION ALL{% endif %}
 {% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
 SELECT
-  {{ dbt_datavault.make_key(src.natural_keys }} AS {{ tgt.hub_key }}
+  {{ dbt_datavault.make_key(src.natural_keys) }} AS {{ tgt.hub_key }}
   ,{{ dbt_datavault.load_dts_code(src) }}
   {% for src_attr, tgt_attr in zip(src.attributes, tgt.attributes) -%}
   ,{{ src_attr }} AS {{ tgt_attr }}
