@@ -18,3 +18,15 @@ WHERE
   {% endif -%}
 {% endif -%}
 {% endmacro -%}
+
+{% macro set_union(dummy) -%}
+  {{ return(adapter.dispatch('set_union','dbt_datavault')(dummy)) }}
+{%- endmacro %}
+
+{% macro default__set_union(dummy) -%}
+  UNION
+{%- endmacro %}
+
+{% macro bigquery__set_union(dummy) -%}
+  UNION DISTINCT
+{%- endmacro %}

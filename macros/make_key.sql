@@ -3,5 +3,5 @@
 {% for str in ids[1:] -%}
 {% do strs.extend(["'|'", str]) -%}
 {% endfor -%}
-CAST({{ dbt.concat(strs) }} AS string)
+CAST({{ dbt.concat(strs) }} AS {{ dbt.type_string() }})
 {%- endmacro %}
