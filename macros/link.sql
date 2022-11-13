@@ -28,12 +28,17 @@ FROM
 {% if not metadata.target %}{{ exceptions.raise_compiler_error(msg ~ "target") }}{% endif -%}
 {% if not metadata.target.link_key %}{{ exceptions.raise_compiler_error(msg ~ "target.link_key") }}{% endif -%}
 {% if not metadata.target.hub_keys %}{{ exceptions.raise_compiler_error(msg ~ "target.hub_keys") }}{% endif -%}
-{% if metadata.target.hub_keys is string %}{{ exceptions.raise_compiler_error("target.hub_keys must be a list") }}{% endif -%}
+{% if not dbt_datavault.is_list(metadata.target.hub_keys) %}{{ exceptions.raise_compiler_error("target.hub_keys must be a list") }}{% endif -%}
 {% if not metadata.sources %}{{ exceptions.raise_compiler_error(msg ~ "sources") }}{% endif -%}
 {% for src in metadata.sources -%}
 {% if not src.table %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].table") }}{% endif -%}
 {% if not src.hub_natural_keys %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].hub_natural_keys ") }}{% endif -%}
-{% if src.hub_natural_keys is string %}{{ exceptions.raise_compiler_error("sources[" ~ loop.index0 ~ "].hub_natural_keys must be a list") }}{% endif -%}
+{% if not dbt_datavault.is_list(src.hub_natural_keys) %}{{ exceptions.raise_compiler_error("sources[" ~ loop.index0 ~ "].hub_natural_keys must be a list") }}{% endif -%}
+{% if not src.hub_natural_keys | length == metadata.target.hub_keys | length %}{{ exceptions.raise_compiler_error("the length of sources[" ~ loop.index0 ~ "].hub_natural_keys must match target.hub_keys") }}{% endif -%}
+{% for nks in src.hub_natural_keys -%}
+{% set outer_index0 = loop.index0 -%}
+{% if not dbt_datavault.is_list(nks) %}{{ exceptions.raise_compiler_error("sources[" ~ outer_index0 ~ "][" ~ loop.index0 ~ "].hub_natural_keys must be a list") }}{% endif -%}
+{% endfor -%}
 {% if not src.load_dts %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].load_dts") }}{% endif -%}
 {% if not src.rec_src %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].rec_src") }}{% endif -%}
 {% endfor -%}

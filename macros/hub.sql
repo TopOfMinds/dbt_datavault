@@ -27,12 +27,13 @@ FROM
 {% if not metadata.target %}{{ exceptions.raise_compiler_error(msg ~ "target") }}{% endif -%}
 {% if not metadata.target.hub_key %}{{ exceptions.raise_compiler_error(msg ~ "target.hub_key") }}{% endif -%}
 {% if not metadata.target.natural_keys %}{{ exceptions.raise_compiler_error(msg ~ "target.natural_keys") }}{% endif -%}
-{% if metadata.target.natural_keys is string %}{{ exceptions.raise_compiler_error("target.natural_keys must be a list") }}{% endif -%}
+{% if not dbt_datavault.is_list(metadata.target.natural_keys) %}{{ exceptions.raise_compiler_error("target.natural_keys must be a list") }}{% endif -%}
 {% if not metadata.sources %}{{ exceptions.raise_compiler_error(msg ~ "sources") }}{% endif -%}
 {% for src in metadata.sources -%}
 {% if not src.table %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].table") }}{% endif -%}
 {% if not src.natural_keys %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].natural_keys") }}{% endif -%}
-{% if src.natural_keys is string %}{{ exceptions.raise_compiler_error("sources[" ~ loop.index0 ~ "].natural_keys must be a list") }}{% endif -%}
+{% if not dbt_datavault.is_list(src.natural_keys) %}{{ exceptions.raise_compiler_error("sources[" ~ loop.index0 ~ "].natural_keys must be a list") }}{% endif -%}
+{% if not src.natural_keys | length == metadata.target.natural_keys | length %}{{ exceptions.raise_compiler_error("the length of sources[" ~ loop.index0 ~ "].natural_keys must match target.natural_keys") }}{% endif -%}
 {% if not src.load_dts %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].load_dts") }}{% endif -%}
 {% if not src.rec_src %}{{ exceptions.raise_compiler_error(msg ~ "sources[" ~ loop.index0 ~ "].rec_src") }}{% endif -%}
 {% endfor -%}

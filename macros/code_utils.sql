@@ -19,6 +19,10 @@ WHERE
 {% endif -%}
 {% endmacro -%}
 
+{% macro is_list(obj) -%}
+{% do return(obj is iterable and (obj is not string and obj is not mapping)) -%}
+{% endmacro -%}
+
 {% macro set_union(dummy) -%}
   {{ return(adapter.dispatch('set_union','dbt_datavault')(dummy)) }}
 {%- endmacro %}
