@@ -1,7 +1,7 @@
 # dbt_datavault by [TopOfMinds](https://topofminds.se/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-A [DBT](https://docs.getdbt.com/docs/introduction) package with macros for creating data vault 2023 styled basics data vault object. The data vault style is based on the work of [Hans Hultgren](https://hanshultgren.wordpress.com/) and the worldwide data vault community. And the templates is based on TopOfMinds 10+ years of data vault implementation experience.
+A [DBT](https://docs.getdbt.com/docs/introduction) package with macros for creating Data vault 2023 basics Data vault object. Data vault is based on the ever evolving work of [Hans Hultgren](https://hanshultgren.wordpress.com/) and the worldwide Data vault community. And the templates is based on Top of Minds 10+ years of Data vault implementation experience.
 
 ## Installation
 Add this package to your `packages.yml` file. E.g:
@@ -14,7 +14,7 @@ And run `dbt deps`.
 Example usage can be found [here](https://github.com/TopOfMinds/dbt_datavault_example).
 
 ## Reference
-The data vault objects can often depend directly on source data. If the source data is to far awy from what is needed in the data vault templates then stage models can be created as a first step.
+The Data vault objects can often depend directly on source data. If the source data is to far away from what is needed in the Data vault templates then stage models can be created as a first step.
 
 ### Hub
 
