@@ -29,6 +29,7 @@ The data vault objects can often depend directly on source data. If the source d
 |  natural_keys | a list with the fields that are used as sources for the target natural keys | X |
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
+|  filter | source filter condition |  |
 
 Example:
 ```
@@ -42,6 +43,7 @@ sources:
     natural_keys: ['customer_id']
     load_dts: ingestion_time
     rec_src: datalake.sales
+    filter: 'customer_id IS NOT NULL'
   - name: datalake
     table: customer
     natural_keys: ['customer_id']
@@ -70,6 +72,7 @@ sources:
 |  hub_natural_keys | a list of lists of the natural keys for each hub key | X |
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
+|  filter | source filter condition |  |
 
 Example:
 ```
@@ -101,6 +104,7 @@ sources:
 |  attributes | a list of the source fields that are used as input to the target attributes | X |
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
+|  filter | source filter condition |  |
 
 Example:
 ```
