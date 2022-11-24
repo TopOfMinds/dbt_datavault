@@ -15,7 +15,7 @@ FROM (
     q.*
     ,ROW_NUMBER() OVER(PARTITION BY {{ dedup_fields | join(', ') }} ORDER BY {{ order_field }} ASC) rn
   FROM (
-    {{- caller() | indent(4) }}
+    {{- caller() | indent(4) -}}
   ) q
   {%- if is_incremental() %}
   WHERE NOT EXISTS (

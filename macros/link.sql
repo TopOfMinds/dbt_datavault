@@ -5,8 +5,8 @@
 {% set all_fields = [tgt.link_key] + tgt.hub_keys + ['load_dts', 'rec_src'] -%}
 
 {% call dbt_datavault.deduplicate([tgt.link_key], all_fields, no_deduplication=tgt.no_deduplication) -%}
-{% for src in metadata.sources %}
-{% if not loop.first %}UNION ALL{% endif -%}
+{%- for src in metadata.sources -%}
+{% if not loop.first %}UNION ALL{% endif %}
 {% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
 {% set src_flat_nks = src.hub_natural_keys | sum(start=[]) -%}
 SELECT
@@ -19,7 +19,7 @@ SELECT
 FROM
   {{ src_table }}
 {{ dbt_datavault.filter_and_incremental_code(src) }}
-{% endfor -%}
+{%- endfor -%}
 {% endcall %}
 {% endmacro %}
 

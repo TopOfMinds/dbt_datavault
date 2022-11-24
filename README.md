@@ -26,6 +26,7 @@ The Data vault objects can often depend directly on source data. If the source d
 | sources | a list of meta data for each source table for the hub | X |
 |  name | if the source is a DBT source then it must have a name field (`source(name, table)`) |   |
 |  table | the table part of a `source(name, table)` or a `ref(table)` | X |
+|  hub_key | *optional* parameter to override the natural_keys, i.e `natural_key + rec_src` |  |
 |  natural_keys | a list with the fields that are used as sources for the target natural keys | X |
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
