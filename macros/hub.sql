@@ -9,10 +9,10 @@
 {% if not loop.first %}UNION ALL{% endif %}
 {% set src_table = source(src.name, src.table) if src.name else ref(src.table) -%}
 SELECT
-  {% if not src.hub_key -%}
+  {% if not src.hub_key_override -%}
   {{ dbt_datavault.make_key(src.natural_keys) }} AS {{ tgt.hub_key }}
   {% else -%}
-  {{ dbt_datavault.make_key(src.hub_key) }} AS {{ tgt.hub_key }}
+  {{ src.hub_key_override }} AS {{ tgt.hub_key }}
   {% endif -%}
   {% for src_natural_key, tgt_natural_key in zip(src.natural_keys, tgt.natural_keys) -%}
   ,{{ src_natural_key }} AS {{ tgt_natural_key }}
