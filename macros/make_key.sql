@@ -1,7 +1,14 @@
 {% macro make_key(ids) -%}
-{% set strs = ids[0:1] -%}
-{% for str in ids[1:] -%}
-{% do strs.extend(["'|'", str]) -%}
-{% endfor -%}
-CAST({{ dbt.concat(strs) }} AS {{ dbt.type_string() }})
+    {% set strs = [] -%}
+        {% for str in ids -%}
+        {%- do strs.append(
+            "CAST(" ~ str ~ " AS " ~ dbt.type_string() ~ ")"
+        ) -%}
+
+        {%- if not loop.last %}
+            {%- do strs.append("'|'") -%}
+        {%- endif -%} 
+
+    {% endfor -%}
+    CAST({{ dbt.concat(strs) }} AS {{ dbt.type_string() }})
 {%- endmacro %}
