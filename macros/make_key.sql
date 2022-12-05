@@ -1,6 +1,6 @@
 {% macro make_key(ids) -%}
     {% set strs = [] -%}
-        {% for str in ids -%}
+    {% for str in ids -%}
         {%- do strs.append(
             "CAST(" ~ str ~ " AS " ~ dbt.type_string() ~ ")"
         ) -%}
