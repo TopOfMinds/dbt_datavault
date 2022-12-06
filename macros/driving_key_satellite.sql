@@ -17,9 +17,11 @@ SELECT
 FROM (
     SELECT 
         link.{{ link.link_key }} 
+        ,link.{{ link.driving_key }} 
+        ,link.{{ link.other_key }}
         ,sat.{{ var('load_dts_column', 'load_dts') }}
         ,sat.effective_ts
-        ,COALESCE(LAG(link.{{ link.other_key }}
+        ,COALESCE(LAG(link.{{ link.other_key }})
             OVER(PARTITION BY link.{{ link.driving_key }}
             ORDER BY sat.effective_ts), '-1') 
         AS prev_key
