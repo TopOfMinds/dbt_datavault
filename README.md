@@ -160,4 +160,66 @@ sources:
 {%- endset %}
 
 {{- dbt_datavault.pit(metadata_yaml) }}
+
+```
+
+### Driving key satellite
+The driving key satellite tracks changes on a relationship, link, and allows to interpret the many-to-many implementation of the Data vault links as a many-to-one relationship. This is done by end-dating relationships if a new relationship is created. The `driving_key` is the key of the relationship that will remain constant and the `other_key` is the key that will change over time.
+
+To be able to use this pattern an `effective_link_satellite` must have been implemented on the relationship.
+
+This can be done using the `satellite` macro provided in the package.
+
+Example:
+```
+{% set metadata_yaml -%}
+target: 
+  hub_key: customer_customer_class_l_key
+  attributes: ['effective_ts']
+sources:
+  - name: datalake
+    table: customer_segmentations
+    natural_keys: ['customer_id', 'customer_class_id']
+    attributes: ['date']
+    load_dts: ingestion_time
+    rec_src: datalake.customer_segmentations
+{%- endset %}
+
+{{- dbt_datavault.satellite(metadata_yaml) }}
+```
+
+Next step will be to generate the driving key satellite on top of the `effective_link_satellite`:
+
+| key | value description | mandatory |
+| --- | --- | --- |
+| target | describes columnes in the generated data vault object | X |
+|  link_key | the name of the link key | X |
+|  effective_ts | the effective timestamp | X |
+| link_source | metadata for the link in the driving key satellite | X |
+|  table | the link the driving key satellite relates to `ref(table)` | X |
+|  link_key | the name of the link key | X |
+|  driving_key | the key that drives the relationship n-1 | X |
+|  other_key | the key that will change over time | X |
+| sat_source | metadata for the effective_link_satellite | X |
+|  table | the source effective_link_satellite  `ref(table)` | X |
+|  link_key | the name of the link key | X |
+|  effective_ts | the effective timestamp column of the satelitte | X |
+
+```
+{% set metadata_yaml -%}
+target: 
+  link_key: customer_customer_class_l_key
+  effective_ts: effective_ts
+link_source:
+    table: customer_customer_class_l
+    link_key: customer_customer_class_l_key
+    driving_key: customer_key
+    other_key: customer_class_key
+sat_source:
+    table: customer_customer_class_l_s
+    link_key: customer_customer_class_l_key
+    effective_ts: effective_ts
+{%- endset %}
+
+{{- dbt_datavault.driving_key_satellite(metadata_yaml) }}
 ```
