@@ -17,8 +17,6 @@ SELECT
 FROM (
     SELECT 
         link.{{ link.link_key }} 
-        ,link.{{ link.hub_key1 }} 
-        ,link.{{ link.hub_key2 }}
         ,sat.{{ var('load_dts_column', 'load_dts') }}
         ,sat.effective_ts
         ,COALESCE(LAG(link.{{ link.other_key }}
