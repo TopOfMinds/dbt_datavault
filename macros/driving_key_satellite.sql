@@ -11,7 +11,7 @@ SELECT
     ,{{ tgt.effective_ts }} 
     ,COALESCE(LEAD(effective_ts)
         OVER(PARTITION BY {{ link.driving_key }}
-        ORDER BY effective_ts), TO_DATE('9999-12-31', 'YYYY-MM-DD'))
+        ORDER BY effective_ts), CAST('9999-12-31' AS TIMESTAMP))
     AS effective_end_ts
     ,{{ var('rec_src_column', 'rec_src') }}
 FROM (
