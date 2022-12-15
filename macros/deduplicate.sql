@@ -1,4 +1,5 @@
 {% macro deduplicate(dedup_fields, return_fields=None, order_field='load_dts', no_deduplication=false, deduplication_include=false) -%}
+{% if deduplication_include %}{% set dedup_fields = deduplication_include %}{% endif %}
 {% if no_deduplication -%}
 {{- caller() }}
 {% else -%}
@@ -24,15 +25,9 @@ FROM (
     FROM
       {{ this }} t
     WHERE
-      {%- if deduplication_include %}
-      {%- for include in deduplication_include %}
-      t.{{ include }} = q.{{ include }}{% if not loop.last %} AND{% endif %}
-      {%- endfor -%} 
-      {%- else -%}
       {%- for dedup_field in dedup_fields %}
       COALESCE(CAST(t.{{ dedup_field }} AS {{ dbt.type_string() }}), '#') = COALESCE(CAST(q.{{ dedup_field }} AS {{ dbt.type_string() }}), '#'){% if not loop.last %} AND{% endif %}
       {%- endfor -%}
-      {%- endif %}   
   )
   {%- endif %}  
 )
