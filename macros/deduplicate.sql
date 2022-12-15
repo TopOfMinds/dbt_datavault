@@ -26,7 +26,7 @@ FROM (
     WHERE
       {%- if deduplication_include %}
       {%- for include in deduplication_include %}
-      t.{{ include }} = q.{{ include }}
+      t.{{ include }} = q.{{ include }}{% if not loop.last %} AND{% endif %}
       {%- endfor -%} 
       {%- else -%}
       {%- for dedup_field in dedup_fields %}
