@@ -1,5 +1,4 @@
-{% macro deduplicate(dedup_fields, return_fields=None, order_field='load_dts', no_deduplication=false, deduplication_include=false) -%}
-{%- if deduplication_include %}{% set dedup_fields = deduplication_include %}{% endif %}
+{% macro deduplicate(dedup_fields, return_fields=None, order_field='load_dts', no_deduplication=false) -%}
 {% if no_deduplication -%}
 {{- caller() }}
 {% else -%}
