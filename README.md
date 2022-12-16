@@ -97,6 +97,8 @@ sources:
 | target | describes columnes in the generated data vault object | X |
 |  hub_key | the name of the hub key | X |
 |  attributes | a list of the attributes of the satellite | X |
+|  no_deduplication | default `false`. if `true` removes the deduplication on target  |  |
+|  deduplication_include | a list of fields to be included in deduplication. Overrides normal behavior where all fields will be added.  |  |
 | sources | a list of meta data for each source table for the satellite | X |
 |  name | if the source is a DBT source then it must have a name field (`source(name, table)`) |   |
 |  table | the table part of a `source(name, table)` or a `ref(table)` | X |

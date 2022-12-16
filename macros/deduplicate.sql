@@ -23,10 +23,10 @@ FROM (
       1
     FROM
       {{ this }} t
-    WHERE 
+    WHERE
       {%- for dedup_field in dedup_fields %}
       COALESCE(CAST(t.{{ dedup_field }} AS {{ dbt.type_string() }}), '#') = COALESCE(CAST(q.{{ dedup_field }} AS {{ dbt.type_string() }}), '#'){% if not loop.last %} AND{% endif %}
-      {%- endfor %} 
+      {%- endfor -%}
   )
   {%- endif %}  
 )
