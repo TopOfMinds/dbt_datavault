@@ -30,6 +30,7 @@ The Data vault objects can often depend directly on source data. If the source d
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
 |  filter | source filter condition |  |
+|  incremental_dts | source column for incremental selection, *default is load_dts*. |  |
 
 Example:
 ```
@@ -53,6 +54,7 @@ sources:
     table: customer_address
     natural_keys: ['customer_id']
     load_dts: ingestion_time
+    incremental_dts: effective_ts
     rec_src: datalake.custommer_address
 {%- endset %}
 
@@ -73,6 +75,7 @@ sources:
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
 |  filter | source filter condition |  |
+|  incremental_dts | source column for incremental selection, *default is load_dts*. |  |
 
 Example:
 ```
@@ -107,6 +110,7 @@ sources:
 |  load_dts | the source column containing the ingestion time | X |
 |  rec_src | a string describing the source | X |
 |  filter | source filter condition |  |
+|  incremental_dts | source column for incremental selection, *default is load_dts*. |  |
 
 Example:
 ```
@@ -120,6 +124,7 @@ sources:
     natural_keys: [transaction_id]
     attributes: ['date', 'CAST(total AS numeric)', 'CAST(tax AS numeric)']
     load_dts: ingestion_time
+    incremental_dts: effective_ts
     rec_src: datalake.sales
 {%- endset %}
 

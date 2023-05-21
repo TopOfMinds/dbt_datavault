@@ -14,7 +14,7 @@ WHERE
   {{ and_() }}{{ src.filter }}
   {% endif -%}
   {% if is_incremental() -%}
-  {{ and_() }}'{{ var('start_ts') }}' <= {{ src.load_dts }} AND {{ src.load_dts }} < '{{ var('end_ts') }}'
+  {{ and_() }}'{{ var('start_ts') }}' <= {% if src.incremental_dts %}{{ src.incremental_dts }}{% else %}{{ src.load_dts }}{% endif %} AND {% if src.incremental_dts %}{{ src.incremental_dts }}{% else %}{{ src.load_dts }}{% endif %} < '{{ var('end_ts') }}'
   {% endif -%}
 {% endif -%}
 {% endmacro -%}
